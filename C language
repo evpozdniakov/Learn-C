@@ -1,0 +1,88 @@
+C language
+
+sentences & functions
+	sentence finishes by `;`
+	
+	function declaration must be mentioned before the first usage of function:
+	<type> <fn name>([<arg type> <arg name>]);
+	(the type is optional, int by default)
+
+call order
+	in a sentence
+	`double x = pop() / pop();`
+	the order in which the two calls of pop are evaluated is not defined
+	to guarantee the order we need separate the calls in two sentences:
+	`double tmp = pop(); double x = tmp / pop();`
+
+errors
+	syntax (compilator complains)
+	semantic (compilator doesn't complain, but program doesn't work as expected)
+
+standard library
+	#include <stdio.h>
+	http://en.wikipedia.org/wiki/ANSI_C_standard_library
+	“C Standard Library headers.”
+
+variables
+	1. create variable
+	2. use it
+
+	Create variable - declare it, specify type and name
+	(unsigned) <type> <variable name>;
+
+	Variable DEFINITION causes memory to be ALLOCATED
+	You INITIALIZE a variable the first time you ASSIGN A VALUE to it.
+
+	Avoid variable names starting by `_` (reserved by Apple) 
+	or by `__` (reserverd by compiler)
+	InterCap is lowerCamelCase for variables and UpperCamelCase for functions
+
+operators
+	Operators are a special character, or group of characters, 
+	that tell the computer that you want it to do something with your variables
+	= assignment operator
+	assigning value to variable means copying value to memory allocated for variable
+
+	(literals - numeric constants, e.g. 5)
+
+	operand is value the operator operates
+	binary operator operates on two operands
+	unary operator does on one
+
+symbolic constants
+	#define    NAME    value    /* optional description, no semicolon */
+	(Is it better than a regular constant?)
+
+	#define square(x) (x) * (x) /* macro with arguments */
+	(Careful, it will not work with i++ parameter!)
+
+	#undef getchar /* to make `getchar` macro undefined in order to declare your own function */
+	(Because you don't know in advance if it is a function which you can redeclare or a macro.)
+
+    #define  dprint(expr)  printf(#expr " = %g\n", expr)
+    (This will replace `dprint(x/y)` into `prinft("x/y = %g\n", x/y)`)
+
+    #define  paste(front, back)  front ## back
+    (## concatenates without white spaces, so `paste(name, 1)` gives `name1`)
+
+conditonal inclusion
+	#if defined(ONE)
+	#include <one.h>
+	#elif defined(TWO)
+	#include <two.h>
+	#else
+	#include <default.h>
+	#endif
+
+	#ifdef ONE /* same as #if defined(ONE) */
+	#ifndef TWO /* same as #if !defined(TWO) */
+
+
+terminology
+	external linkage: all the global (external) variables and functions
+	can be referenced by their names from any place of the program, even from different files
+
+personalities
+	Grace “Amazing Grace” Hopper introduced `bug` and `debugging` notions in 1947.
+
+
