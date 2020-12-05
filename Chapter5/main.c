@@ -5,7 +5,8 @@ typedef enum { false, true } bool;
 
 char getch(void);
 void getchTest(void);
-int getint(int *p);
+int getint(int *np);
+// int getfloat(int *np);
 void getintTest(void);
 bool isDigit(char c);
 void isDigitTest(void);
@@ -54,6 +55,8 @@ int getint(int *pn)
 {
   int c, sign;
 
+  bool numberFound = false;
+
   while (isWhiteSpace(c = getch()) == true)
     ;
   
@@ -65,13 +68,19 @@ int getint(int *pn)
   if (c == '+' || c == '-')
     c = getch();
 
+  if (isDigit(c) == true)
+    numberFound = true;
+
   for (*pn = 0; isDigit(c) == true; c = getch())
     *pn = *pn * 10 + c - '0';
 
-  if (c != EOF)
-    ungetch(c);
+  *pn *= sign;
 
-  return c;
+  if (c == EOF)
+    return EOF;
+
+  ungetch(c);
+  return numberFound == true ? c : 0;
 }
 
 void getintTest(void)
@@ -81,18 +90,18 @@ void getintTest(void)
   // char input[] = " 05 04+\t03-\t02\t 01- ";
   // char s[45] = "=-4ufaosdihf lasdhf lasdhfk ajsdhf alsdjhfas\n";
   // for some reason the length of 200 works fine, but 100 or 300 don't
-  char input[200] = " 098\n\t 076\t 05 04+\n03-\t02\t 01- ";
+  char input[200] = " 098\n\t some NaN 076\t 05 04+\n03-\t02\t 01- 0 5 - 4 + 3 0- 2 0+ 1";
 
   int i = 0;
 
   while ((c = input[i++]) != '\0')
     ungetch(c);
 
-  int *p;
+  int *pn;
 
-  while ((c = getint(p)) != EOF)
+  while ((c = getint(pn)) != EOF)
     if (c)
-      printf("`%c`, %d\n", c, *p);
+      printf("`%c`, %d\n", c, *pn);
 }
 
 bool isDigit(char c)
