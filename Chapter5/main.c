@@ -1,15 +1,15 @@
 #include <stdio.h>
-#include <string.h>
-
-typedef enum { false, true } bool;
 
 char getch(void);
 void getchTest(void);
-int getint(int *np);
-// int getfloat(int *np);
+int getfloat(float *pf);
+void getfloatTest(void);
+int getint(int *pn);
 void getintTest(void);
 int isDigit(char c);
 void isDigitTest(void);
+int isDigitOrDot(char c);
+void isDigitOrDotTest(void);
 int isWhiteSpace(char c);
 void isWhiteSpaceTest(void);
 void ungetch(char c);
@@ -19,13 +19,15 @@ const int BUF_SIZE = 100;
 char BUF[BUF_SIZE];
 int BUF_INDEX = -1;
 
-int main()
+int main(int argc, char** argv)
 {
   printf("\n");
   // getchTest();
-  getintTest();
+  getfloatTest();
+  // getintTest();
   // getint();
   // isDigitTest();
+  // isDigitOrDotTest();
   // isWhiteSpaceTest();
   // ungetchTest();
 
@@ -51,11 +53,64 @@ void getchTest(void)
   printf("%c%c%c! %c", getch(), getch(), getch(), getch());
 }
 
+int getfloat(float *pf)
+{
+  int *pn;
+  int c = getint(pn);
+
+  *pf = *pn * 1.0;
+
+  char c2 = (char) c;
+
+  if (c2 == '.')
+  {
+    printf("->`%c`\n", c2);
+    return c;
+  }
+
+  // c = getch();
+  // int d = 1;
+
+  // do
+  // {
+  //   d *= 10;
+  //   *pf += 1.0 * (c - '0') / d;
+  //   c = getch();
+  // } while (isDigit(c));
+
+  // if (c == EOF)
+  //   return EOF;
+
+  // ungetch(c);
+  return c;
+}
+
+void getfloatTest(void)
+{
+  char c;
+
+  // char input[] = " 05 04+\t03-\t02\t 01- ";
+  // char s[45] = "=-4ufaosdihf lasdhf lasdhfk ajsdhf alsdjhfas\n";
+  // for some reason the length of 200 works fine, but 100 or 300 don't
+  char input[200] = " 30.- 09.8\n\t some NaN 0.76\t 05 04+\n03-\t02\t 10.1- 0 5. - 4 + 3 0- 2 0+ 1";
+
+  int i = 0;
+
+  while ((c = input[i++]) != '\0')
+    ungetch(c);
+
+  float *pf;
+
+  while ((c = getfloat(pf)) != EOF)
+    if (c)
+      printf("%f\t(%c)\n", *pf, c);
+}
+
 int getint(int *pn)
 {
   int c, sign;
 
-  bool numberFound = false;
+  int numberFound = 0;
 
   while (isWhiteSpace(c = getch()))
     ;
@@ -69,7 +124,7 @@ int getint(int *pn)
     c = getch();
 
   if (isDigit(c))
-    numberFound = true;
+    numberFound = 1;
 
   for (*pn = 0; isDigit(c); c = getch())
     *pn = *pn * 10 + c - '0';
@@ -80,7 +135,7 @@ int getint(int *pn)
     return EOF;
 
   ungetch(c);
-  return numberFound == true ? c : 0;
+  return numberFound ? c : 0;
 }
 
 void getintTest(void)
@@ -112,25 +167,66 @@ int isDigit(char c)
 void isDigitTest(void)
 {
   char c = ' ';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "YES" : "NO");
 
   c = '\t';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "YES" : "NO");
 
   c = '\n';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "YES" : "NO");
 
   c = '+';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "YES" : "NO");
 
   c = '-';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "YES" : "NO");
 
   c = '0';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "YES" : "NO");
 
   c = '1';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "YES" : "NO");
+}
+
+int isDigitOrDot(char c)
+{
+  if (c == '.')
+    return 1;
+
+  return isDigit(c);
+}
+
+void isDigitOrDotTest(void)
+{
+  char c = ' ';
+  printf("isDigitOrDot('%c') is %s\n", c, isDigitOrDot(c) ? "YES" : "NO");
+
+  c = '\t';
+  printf("isDigitOrDot('%c') is %s\n", c, isDigitOrDot(c) ? "YES" : "NO");
+
+  c = '\n';
+  printf("isDigitOrDot('%c') is %s\n", c, isDigitOrDot(c) ? "YES" : "NO");
+
+  c = '+';
+  printf("isDigitOrDot('%c') is %s\n", c, isDigitOrDot(c) ? "YES" : "NO");
+
+  c = '-';
+  printf("isDigitOrDot('%c') is %s\n", c, isDigitOrDot(c) ? "YES" : "NO");
+
+  c = '0';
+  printf("isDigitOrDot('%c') is %s\n", c, isDigitOrDot(c) ? "YES" : "NO");
+
+  c = '1';
+  printf("isDigitOrDot('%c') is %s\n", c, isDigitOrDot(c) ? "YES" : "NO");
+
+  c = '.';
+  printf("isDigitOrDot('%c') is %s\n", c, isDigitOrDot(c) ? "YES" : "NO");
+
+  c = '8';
+  printf("isDigitOrDot('%c') is %s\n", c, isDigitOrDot(c) ? "YES" : "NO");
+
+  c = '9';
+  printf("isDigitOrDot('%c') is %s\n", c, isDigitOrDot(c) ? "YES" : "NO");
 }
 
 int isWhiteSpace(char c)
@@ -141,25 +237,25 @@ int isWhiteSpace(char c)
 void isWhiteSpaceTest(void)
 {
   char c = ' ';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "YES" : "NO");
 
   c = '\t';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "YES" : "NO");
 
   c = '\n';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "YES" : "NO");
 
   c = '+';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "YES" : "NO");
 
   c = '-';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "YES" : "NO");
 
   c = '0';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "YES" : "NO");
 
   c = '1';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "YES" : "NO");
 }
 
 void ungetch(char c)
