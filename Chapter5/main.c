@@ -5,7 +5,7 @@ typedef enum { false, true } bool;
 
 char getch(void);
 void getchTest(void);
-char getint(int *p);
+int getint(int *p);
 void getintTest(void);
 bool isDigit(char c);
 void isDigitTest(void);
@@ -50,42 +50,28 @@ void getchTest(void)
   printf("%c%c%c! %c", getch(), getch(), getch(), getch());
 }
 
-char getint(int *p)
+int getint(int *pn)
 {
-  char c;
+  int c, sign;
 
   while (isWhiteSpace(c = getch()) == true)
     ;
   
-  if (c != '+' && c != '-' && isDigit(c) == false)
-    return c == EOF ? EOF : 0;
+  if (c != '+' && c != '-' && isDigit(c) == false && c != EOF)
+    return 0;
 
-  int sign = 1;
-
-  if (c == '-')
-    sign = -1;
+  sign = c == '-' ? -1 : 1;
   
   if (c == '+' || c == '-')
     c = getch();
 
-  if (isDigit(c) == false)
-    return c == EOF ? EOF : 0;
+  for (*pn = 0; isDigit(c) == true; c = getch())
+    *pn = *pn * 10 + c - '0';
 
-  int n = 0;
+  if (c != EOF)
+    ungetch(c);
 
-  do
-  {
-    n *= 10;
-    n += c - '0';
-    c = getch();
-  }
-  while (isDigit(c) == true);
-
-  ungetch(c);
-
-  *p = n * sign;
-
-  return c == EOF ? EOF : 1;
+  return c;
 }
 
 void getintTest(void)
