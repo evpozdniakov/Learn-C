@@ -92,12 +92,13 @@ void getintTest(void)
 {
   char c;
 
-  char input[] = " 05 04+\t03-\t02\t 01- ";
+  // char input[] = " 05 04+\t03-\t02\t 01- ";
   // char s[45] = "=-4ufaosdihf lasdhf lasdhfk ajsdhf alsdjhfas\n";
-  // char input[] = "098\n\t 076\t 05 04+\n03-\t02\t 01- ";
+  // for some reason the length of 200 works fine, but 100 or 300 don't
+  char input[200] = " 098\n\t 076\t 05 04+\n03-\t02\t 01- ";
 
   int i = 0;
-  
+
   while ((c = input[i++]) != '\0')
     ungetch(c);
 
