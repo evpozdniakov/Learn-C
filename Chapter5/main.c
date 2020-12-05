@@ -8,9 +8,9 @@ void getchTest(void);
 int getint(int *np);
 // int getfloat(int *np);
 void getintTest(void);
-bool isDigit(char c);
+int isDigit(char c);
 void isDigitTest(void);
-bool isWhiteSpace(char c);
+int isWhiteSpace(char c);
 void isWhiteSpaceTest(void);
 void ungetch(char c);
 void ungetchTest(void);
@@ -57,10 +57,10 @@ int getint(int *pn)
 
   bool numberFound = false;
 
-  while (isWhiteSpace(c = getch()) == true)
+  while (isWhiteSpace(c = getch()))
     ;
   
-  if (c != '+' && c != '-' && isDigit(c) == false && c != EOF)
+  if (c != '+' && c != '-' && !isDigit(c) && c != EOF)
     return 0;
 
   sign = c == '-' ? -1 : 1;
@@ -68,10 +68,10 @@ int getint(int *pn)
   if (c == '+' || c == '-')
     c = getch();
 
-  if (isDigit(c) == true)
+  if (isDigit(c))
     numberFound = true;
 
-  for (*pn = 0; isDigit(c) == true; c = getch())
+  for (*pn = 0; isDigit(c); c = getch())
     *pn = *pn * 10 + c - '0';
 
   *pn *= sign;
@@ -104,62 +104,62 @@ void getintTest(void)
       printf("`%c`, %d\n", c, *pn);
 }
 
-bool isDigit(char c)
+int isDigit(char c)
 {
-  return (c >= '0' && c <= '9') ? true : false;
+  return (c >= '0' && c <= '9') ? 1 : 0;
 }
 
 void isDigitTest(void)
 {
   char c = ' ';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) == true ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
 
   c = '\t';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) == true ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
 
   c = '\n';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) == true ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
 
   c = '+';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) == true ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
 
   c = '-';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) == true ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
 
   c = '0';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) == true ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
 
   c = '1';
-  printf("isDigit('%c') is %s\n", c, isDigit(c) == true ? "true" : "false");
+  printf("isDigit('%c') is %s\n", c, isDigit(c) ? "true" : "false");
 }
 
-bool isWhiteSpace(char c)
+int isWhiteSpace(char c)
 {
-  return (c == ' ' || c == '\t' || c == '\n') ? true : false;
+  return (c == ' ' || c == '\t' || c == '\n') ? 1 : 0;
 }
 
 void isWhiteSpaceTest(void)
 {
   char c = ' ';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) == true ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
 
   c = '\t';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) == true ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
 
   c = '\n';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) == true ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
 
   c = '+';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) == true ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
 
   c = '-';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) == true ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
 
   c = '0';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) == true ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
 
   c = '1';
-  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) == true ? "true" : "false");
+  printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "true" : "false");
 }
 
 void ungetch(char c)
