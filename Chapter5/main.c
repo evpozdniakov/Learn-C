@@ -2,9 +2,9 @@
 
 char getch(void);
 void getchTest(void);
-int getfloat(float *pf);
+char getfloat(float *pf);
 void getfloatTest(void);
-int getint(int *pn);
+char getint(int *pn);
 void getintTest(void);
 int isDigit(char c);
 void isDigitTest(void);
@@ -23,8 +23,8 @@ int main(int argc, char** argv)
 {
   printf("\n");
   // getchTest();
-  getfloatTest();
-  // getintTest();
+  // getfloatTest();
+  getintTest();
   // getint();
   // isDigitTest();
   // isDigitOrDotTest();
@@ -53,35 +53,51 @@ void getchTest(void)
   printf("%c%c%c! %c", getch(), getch(), getch(), getch());
 }
 
-int getfloat(float *pf)
+char getfloat(float *pf)
 {
-  int *pn;
-  int c = getint(pn);
+  int n;
 
-  *pf = *pn * 1.0;
+  int *pn = &n;
 
-  char c2 = (char) c;
+  char c = getint(pn);
 
-  if (c2 == '.')
+  float sign = c == '-' ? -1.0 : 1.0;
+
+  *pf = 1.0 * *pn;
+
+  c = getch();
+
+  if (c != '.')
   {
-    printf("->`%c`\n", c2);
+    ungetch(c);
     return c;
   }
 
-  // c = getch();
-  // int d = 1;
+  c = getch();
 
-  // do
-  // {
-  //   d *= 10;
-  //   *pf += 1.0 * (c - '0') / d;
-  //   c = getch();
-  // } while (isDigit(c));
+  if (!isDigit(c))
+  {
+    ungetch(c);
+    ungetch('.');
+    return '.';
+  }
 
-  // if (c == EOF)
-  //   return EOF;
+  int d = 1;
+  *pf *= sign; // make it positive
 
-  // ungetch(c);
+  do
+  {
+    d *= 10;
+    *pf += 1.0 * (c - '0') / d;
+    c = getch();
+  } while (isDigit(c));
+
+  *pf *= sign; // apply sign
+
+  if (c == EOF)
+    return EOF;
+
+  ungetch(c);
   return c;
 }
 
@@ -92,30 +108,30 @@ void getfloatTest(void)
   // char input[] = " 05 04+\t03-\t02\t 01- ";
   // char s[45] = "=-4ufaosdihf lasdhf lasdhfk ajsdhf alsdjhfas\n";
   // for some reason the length of 200 works fine, but 100 or 300 don't
-  char input[200] = " 30.- 09.8\n\t some NaN 0.76\t 05 04+\n03-\t02\t 10.1- 0 5. - 4 + 3 0- 2 0+ 1";
+  char input[] = " 30.- 09.8\n\t some NaN 0.76\t 05 103.+\n52.-\t102.\t 51.0+ 101.0- 5.0";
 
   int i = 0;
 
   while ((c = input[i++]) != '\0')
     ungetch(c);
 
-  float *pf;
+  float f;
+  float *pf = &f;
 
   while ((c = getfloat(pf)) != EOF)
     if (c)
       printf("%f\t(%c)\n", *pf, c);
 }
 
-int getint(int *pn)
+char getint(int *pn)
 {
-  int c, sign;
-
-  int numberFound = 0;
+  char c, res;
+  int sign;
 
   while (isWhiteSpace(c = getch()))
     ;
   
-  if (c != '+' && c != '-' && !isDigit(c) && c != EOF)
+  if (c != '+' && c != '-' && !isDigitOrDot(c) && c != EOF)
     return 0;
 
   sign = c == '-' ? -1 : 1;
@@ -123,8 +139,10 @@ int getint(int *pn)
   if (c == '+' || c == '-')
     c = getch();
 
-  if (isDigit(c))
-    numberFound = 1;
+  if (isDigitOrDot(c))
+    res = sign == 1 ? '+' : '-';
+  else
+    res = 0;
 
   for (*pn = 0; isDigit(c); c = getch())
     *pn = *pn * 10 + c - '0';
@@ -135,7 +153,7 @@ int getint(int *pn)
     return EOF;
 
   ungetch(c);
-  return numberFound ? c : 0;
+  return res;
 }
 
 void getintTest(void)
@@ -145,14 +163,15 @@ void getintTest(void)
   // char input[] = " 05 04+\t03-\t02\t 01- ";
   // char s[45] = "=-4ufaosdihf lasdhf lasdhfk ajsdhf alsdjhfas\n";
   // for some reason the length of 200 works fine, but 100 or 300 don't
-  char input[200] = " 098\n\t some NaN 076\t 05 04+\n03-\t02\t 01- 0 5 - 4 + 3 0- 2 0+ 1";
+  char input[] = " 098\n\t some NaN 076\t 05 04+\n03-\t02\t 01- 0 5 - 4 + 3 0- 2 0+ 1";
 
   int i = 0;
 
   while ((c = input[i++]) != '\0')
     ungetch(c);
 
-  int *pn;
+  int n;
+  int *pn = &n;
 
   while ((c = getint(pn)) != EOF)
     if (c)
