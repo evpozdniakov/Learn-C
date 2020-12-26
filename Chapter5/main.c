@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 char getch(void);
 void getchTest(void);
@@ -12,8 +13,22 @@ int isDigitOrDot(char c);
 void isDigitOrDotTest(void);
 int isWhiteSpace(char c);
 void isWhiteSpaceTest(void);
+void pointerTest(void);
 void ungetch(char c);
 void ungetchTest(void);
+int strlen3(const char *s);
+int strcmp2(char *dst, char *src);
+void strcmp2Test(void);
+char * strcat2(char *s, const char *t);
+void strcat2Test(void);
+int strend(char *s, const char *t);
+void strendTest(void);
+void strncpy2(char *s, const char *t, int n);
+void strncpy2Test(void);
+void strncat2(char *s, const char *t, int n);
+void strncat2Test(void);
+int strncmp2(const char *s, const char *t, int n);
+void ctrncmp2Test(void);
 
 const int BUF_SIZE = 100;
 char BUF[BUF_SIZE];
@@ -24,11 +39,18 @@ int main(int argc, char** argv)
   printf("\n");
   // getchTest();
   // getfloatTest();
-  getintTest();
+  // getintTest();
   // getint();
   // isDigitTest();
   // isDigitOrDotTest();
   // isWhiteSpaceTest();
+  // pointerTest();
+  // strcmp2Test();
+  // strcat2Test();
+  // strendTest();
+  // strncpy2Test();
+  // strncat2Test();
+  ctrncmp2Test();
   // ungetchTest();
 
   return 0;
@@ -275,6 +297,239 @@ void isWhiteSpaceTest(void)
 
   c = '1';
   printf("isWhiteSpace('%c') is %s\n", c, isWhiteSpace(c) ? "YES" : "NO");
+}
+
+void pointerTest(void)
+{
+  int a[] = {0, 1, 2, 3, 4, 5, 6, 7};
+
+  int *p1 = &a[0];
+
+  int *p2;
+
+  p2 = a;
+
+  printf("a is %p\n", a);
+  printf("p1 is %p\n", p1);
+  printf("p2 is %p\n", p2);
+  printf("p2[3] is %d\n", p2[3]);
+
+  char s[] = "hello";
+
+  char *ps = &s[0];
+
+  int l = strlen3(s);
+
+  printf("length of `%s` is %d\n", s, l);
+
+  for (int i = 0; i < 2000; i++)
+    printf("%d %c", i, *(ps + i));
+  
+  printf("\n");
+}
+
+int strlen3(const char *s)
+{
+  int i;
+
+  for (i = 0; *s != '\0'; s++, i++)
+    ;
+
+  return i;
+}
+
+int strcmp2(char *s1, char *s2)
+{
+  do
+  {
+    if (*s1 < *s2)
+      return 1;
+    else if (*s1 > *s2)
+      return -1;
+    s1++;
+    s2++;
+  } while (*s1 != '\0' || *s2 != '\0');
+  
+  return 0;
+}
+
+void strcmp2Test(void)
+{
+  printf("strcmp2(`ab`, `ab`) is %d\n", strcmp2("ab", "ab"));
+  printf("strcmp2(`ab`, `ac`) is %d\n", strcmp2("ab", "ac"));
+  printf("strcmp2(`ab`, `aa`) is %d\n", strcmp2("ab", "aa"));
+  printf("strcmp2(`ab`, `abc`) is %d\n", strcmp2("ab", "abc"));
+  printf("strcmp2(`abcd`, `abc`) is %d\n", strcmp2("abcd", "abc"));
+}
+
+/* copies the string t to the end of s */
+char * strcat2(char *s, const char *t)
+{
+  char *res;
+  res = s;
+
+  while (*s)
+    s++;
+  
+  while ((*s++ = *t++) != '\0')
+    ;
+
+  return res;
+}
+
+void strcat2Test(void)
+{
+  char s1[] = "ab";
+  printf("strcat2(`ab`, `cd`): %s\n", strcat2(s1, "cd"));
+
+  char s2[] = "";
+  printf("strcat2(``, `cd`): %s\n", strcat2(s2, "cd"));
+
+  char s3[] = "ab";
+  printf("strcat2(`ab`, ``): %s\n", strcat2(s3, ""));
+}
+
+/* returns 1 if the string t occurs at the end of the string s, and zero otherwise */
+int strend(char *s, const char *t)
+{
+  int tl = strlen3(t);
+  int sl = strlen3(s);
+
+  if (tl > sl)
+    return 0;
+
+  s += sl - tl;
+
+  do {
+    // printf("%c vs %c\n", *s, *t);
+    if (*s++ != *t++)
+      return 0;
+  }
+  while (*s != '\0' && *t != '\0');
+
+  return 1;
+}
+
+void strendTest(void)
+{
+  printf("strend(`abcde`, `cde`) is %d\n", strend("abcde", "cde"));
+  printf("strend(`abcde`, `abcde`) is %d\n", strend("abcde", "abcde"));
+  printf("strend(`abcde`, `abcdef`) is %d\n", strend("abcde", "abcdef"));
+  printf("strend(`abcde`, `cd`) is %d\n", strend("abcde", "cd"));
+  printf("strend(`bcde`, `abcde`) is %d\n", strend("bcde", "abcde"));
+}
+
+void strncpy2(char *s, const char *t, int n)
+{
+  for (int i = 0; *s != '\0' && *t != '\0' && i < n; i++)
+    *s++ = *t++;
+}
+
+void strncpy2Test(void)
+{
+  char t[30] = "abcdefghijklmn";
+  char s[30] = "0123456";
+  int n = 90;
+  printf("strncpy2(`%s`, `%s`, %d)", s, t, n);
+  strncpy2(s, t, n);
+  printf(" makes s = `%s`\n", s);
+
+  n = 4;
+  for (int i = 0; i < 7; i++)
+    *(s + i) = '0' + i;
+  *(s + 7) = '\0';
+  printf("strncpy2(`%s`, `%s`, %d)", s, t, n);
+  strncpy2(s, t, n);
+  printf(" makes s = `%s`\n", s);
+
+  n = 0;
+  for (int i = 0; i < 7; i++)
+    *(s + i) = '0' + i;
+  *(s + 7) = '\0';
+  printf("strncpy2(`%s`, `%s`, %d)", s, t, n);
+  strncpy2(s, t, n);
+  printf(" makes s = `%s`\n", s);
+
+  n = -2;
+  for (int i = 0; i < 7; i++)
+    *(s + i) = '0' + i;
+  *(s + 7) = '\0';
+  printf("strncpy2(`%s`, `%s`, %d)", s, t, n);
+  strncpy2(s, t, n);
+  printf(" makes s = `%s`\n", s);
+}
+
+/* concatenate at most n characters of t to end of s */
+void strncat2(char *s, const char *t, int n)
+{
+  s += strlen3(s);
+
+  for (int i = 0; i < n && *t != '\0'; i++)
+    *s++ = *t++;
+
+  *s = '\0';
+}
+
+void strncat2Test(void)
+{
+  char t[] = "abcdef";
+  char s[20] = "0123456";
+  int n = 10;
+
+  printf("strncat2(`%s`, `%s`, %d)", s, t, n);
+  strncat2(s, t, n);
+  printf(" makes s = `%s`\n", s);
+
+  *(s + 7) = '\0';
+  n = 2;
+  printf("strncat2(`%s`, `%s`, %d)", s, t, n);
+  strncat2(s, t, n);
+  printf(" makes s = `%s`\n", s);
+
+  *(s + 7) = '\0';
+  n = 0;
+  printf("strncat2(`%s`, `%s`, %d)", s, t, n);
+  strncat2(s, t, n);
+  printf(" makes s = `%s`\n", s);
+
+  *(s + 7) = '\0';
+  n = -4;
+  printf("strncat2(`%s`, `%s`, %d)", s, t, n);
+  strncat2(s, t, n);
+  printf(" makes s = `%s`\n", s);
+}
+
+/* compares first n characters of strings s and t;
+   returns difference */
+int strncmp2(const char *s, const char *t, int n)
+{
+  for (int i = 1; i < n && *s == *t && *s != '\0'; s++, t++, i++)
+    ;
+
+  return *s - *t;
+}
+
+void ctrncmp2Test(void)
+{
+  int n1 = 0;
+  char s1[] = "abcdef";
+  char t1[] = "abccc";
+  printf("strncmp2(`%s`, `%s`, %d) is %d\n", s1, t1, n1, strncmp2(s1, t1, n1));
+
+  int n2 = 3;
+  char s2[] = "abcdef";
+  char t2[] = "abccc";
+  printf("strncmp2(`%s`, `%s`, %d) is %d\n", s2, t2, n2, strncmp2(s2, t2, n2));
+
+  int n3 = 5;
+  char s3[] = "abcdef";
+  char t3[] = "abccc";
+  printf("strncmp2(`%s`, `%s`, %d) is %d\n", s3, t3, n3, strncmp2(s3, t3, n3));
+
+  int n4 = 5;
+  char s4[] = "abcdef";
+  char t4[] = "ab";
+  printf("strncmp2(`%s`, `%s`, %d) is %d\n", s4, t4, n4, strncmp2(s4, t4, n4));
 }
 
 void ungetch(char c)
