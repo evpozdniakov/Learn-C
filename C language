@@ -86,3 +86,35 @@ personalities
 	Grace “Amazing Grace” Hopper introduced `bug` and `debugging` notions in 1947.
 
 
+pointers
+	int a[5] = { 10, 20, 30, 40, 50 };
+	int *pa = &a[0];
+	now *pa has value of a[0]
+	*(pa + 1) has value of a[1]
+	*(pa + i) has value of a[i]
+
+	a holds the address of the first element of the array - &a[0]
+	in other words: a == pa
+	therefore instead of 
+		int *pa = &a[0];
+	we could do
+		int *pa = a;
+	and instead of
+		*(pa + i)
+	we could do
+		*(a + i)
+	and instead of
+		a[i]
+	we could do
+		pa[i]
+	The difference between a and pa is the following
+		pa is a variable, we can do pa++
+		a is the name of an array, a++ is illegal
+	
+	C guarantees that zero is never a valid address,
+	so it can be used in a condition. The symbolic constant NULL
+	can be used insted of zero as well.
+
+	Pointers to different members of the same array can be compared using >, <, ==, and !==
+	It is also legal to add/substract a pointer and an int
+	Other ariphmetical operations with pointers are illegal
