@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
+int atoi(const char *s);
+void atoiTest(void);
+void expect(const char *s, int n);
 char getch(void);
 void getchTest(void);
 char getfloat(float *pf);
@@ -37,6 +40,7 @@ int BUF_INDEX = -1;
 int main(int argc, char** argv)
 {
   printf("\n");
+  atoiTest();
   // getchTest();
   // getfloatTest();
   // getintTest();
@@ -50,10 +54,57 @@ int main(int argc, char** argv)
   // strendTest();
   // strncpy2Test();
   // strncat2Test();
-  ctrncmp2Test();
+  // ctrncmp2Test();
   // ungetchTest();
 
   return 0;
+}
+
+/* converts received string into an integer and returns it (or zero) */
+int atoi(const char *s)
+{
+  while (*s == ' ' || *s == '\t')
+    s++;
+
+  int sign = *s == '-' ? -1 : 1;
+
+  if (*s == '+' || *s == '-')
+    s++;
+
+  int res = 0;
+
+  while (*s >= '0' && *s <= '9')
+  {
+    res *= 10;
+    res += *s++ - '0';
+  }
+
+  res *= sign;
+
+  return res;
+}
+
+void atoiTest(void)
+{
+  expect("atoi(`1234`) is 1234", atoi("1234") == 1234);
+  expect("atoi(` 1234 `) is 1234", atoi(" 1234 ") == 1234);
+  expect("atoi(`01234`) is 1234", atoi("01234") == 1234);
+  expect("atoi(` 01234 `) is 1234", atoi(" 01234 ") == 1234);
+  expect("atoi(`+44`) is +44", atoi("+44") == +44);
+  expect("atoi(` +44 `) is +44", atoi(" +44 ") == +44);
+  expect("atoi(`+044`) is +44", atoi("+044") == +44);
+  expect("atoi(` +044 `) is +44", atoi(" +044 ") == +44);
+  expect("atoi(`-9876`) is -9876", atoi("-9876") == -9876);
+  expect("atoi(` -9876 `) is -9876", atoi(" -9876 ") == -9876);
+  expect("atoi(`-09876`) is -9876", atoi("-09876") == -9876);
+  expect("atoi(` -09876 `) is -9876", atoi(" -09876 ") == -9876);
+  expect("atoi(`xyz`) is 0", atoi("xyz") == 0);
+  expect("atoi(`e123`) is 0", atoi("e123") == 0);
+}
+
+void expect(const char *s, int n)
+{
+  printf("%s: %s\n", (n ? "PASS" : "FAIL"), s);
 }
 
 char getch(void)
