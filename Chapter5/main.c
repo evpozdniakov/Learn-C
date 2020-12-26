@@ -32,6 +32,8 @@ void strncat2(char *s, const char *t, int n);
 void strncat2Test(void);
 int strncmp2(const char *s, const char *t, int n);
 void ctrncmp2Test(void);
+int strindex(const char *s, const char *t);
+void testStrindex(void);
 
 const int BUF_SIZE = 100;
 char BUF[BUF_SIZE];
@@ -40,7 +42,7 @@ int BUF_INDEX = -1;
 int main(int argc, char** argv)
 {
   printf("\n");
-  atoiTest();
+  // atoiTest();
   // getchTest();
   // getfloatTest();
   // getintTest();
@@ -55,6 +57,7 @@ int main(int argc, char** argv)
   // strncpy2Test();
   // strncat2Test();
   // ctrncmp2Test();
+  testStrindex();
   // ungetchTest();
 
   return 0;
@@ -581,6 +584,42 @@ void ctrncmp2Test(void)
   char s4[] = "abcdef";
   char t4[] = "ab";
   printf("strncmp2(`%s`, `%s`, %d) is %d\n", s4, t4, n4, strncmp2(s4, t4, n4));
+}
+
+
+/**
+ * returns position of letf most entry of t in s
+ * or -1
+ */
+int strindex(const char *s, const char *t)
+{
+  int i = 0, j;
+
+  while (1)
+  {
+    for (j = 0; *(s + j) == *(t + j) && *(t + j) != '\0'; j++);
+
+    if (*(t + j) == '\0')
+      return i;
+    
+    if (*(s + j) == '\0')
+      return -1;
+    
+    i++;
+    s++;
+  }
+}
+
+void testStrindex()
+{
+  expect("strindex(`Hello, world`, `Hell`) is 0", strindex("Hello, world", "Hell") == 0);
+  expect("strindex(`Hello, world`, `abc`) is -1", strindex("Hello, world", "abc") == -1);
+  expect("strindex(`Hello, world`, ``) is 0", strindex("Hello, world", "") == 0);
+  expect("strindex(`Hello, hello, my dear friend!!!`, `ll`) is 2", strindex("Hello, hello, my dear friend!!!", "ll") == 2);
+  expect("strindex(`Hell`, `Hello, world`) is -1", strindex("Hell", "Hello, world") == -1);
+  expect("strindex(`Hell`, `Hell`) is 0", strindex("Hell", "Hell") == 0);
+  expect("strindex(` Hell`, `Hell`) is 1", strindex(" Hell", "Hell") == 1);
+  expect("strindex(` Hell`, `l`) is 3", strindex(" Hell", "l") == 3);
 }
 
 void ungetch(char c)
