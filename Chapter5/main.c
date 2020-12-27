@@ -17,8 +17,8 @@ void isDigitOrDotTest(void);
 int isWhiteSpace(char c);
 void isWhiteSpaceTest(void);
 void pointerTest(void);
-void ungetch(char c);
-void ungetchTest(void);
+void quicksort(int *n, int l, int r);
+void quicksortTest(void);
 int strlen3(const char *s);
 int strcmp2(char *dst, char *src);
 void strcmp2Test(void);
@@ -31,9 +31,13 @@ void strncpy2Test(void);
 void strncat2(char *s, const char *t, int n);
 void strncat2Test(void);
 int strncmp2(const char *s, const char *t, int n);
-void ctrncmp2Test(void);
+void strncmp2Test(void);
 int strindex(const char *s, const char *t);
-void testStrindex(void);
+void strindexTest(void);
+void swap(int *n, int *m);
+void swapTest(void);
+void ungetch(char c);
+void ungetchTest(void);
 
 const int BUF_SIZE = 100;
 char BUF[BUF_SIZE];
@@ -51,13 +55,15 @@ int main(int argc, char** argv)
   // isDigitOrDotTest();
   // isWhiteSpaceTest();
   // pointerTest();
+  quicksortTest();
   // strcmp2Test();
   // strcat2Test();
   // strendTest();
   // strncpy2Test();
   // strncat2Test();
-  // ctrncmp2Test();
-  testStrindex();
+  // strncmp2Test();
+  // strindexTest();
+  // swapTest();
   // ungetchTest();
 
   return 0;
@@ -382,6 +388,52 @@ void pointerTest(void)
   printf("\n");
 }
 
+void quicksort(int *n, int l, int r)
+{
+  if (r <= l)
+    return;
+
+  int *ppivot = n + (r - l) / 2;
+  int pivot = *ppivot;
+
+  swap(ppivot, n + r);
+
+  int i = l, j = r - 1;
+
+  while (1)
+  {
+    while (*(n + i) <= pivot)
+      i++;
+
+    while (*(n + j) >= pivot)
+      j--;
+
+    if (i > j)
+      break;
+
+    swap(n + i, n + j);
+  }
+
+  swap(n + r, n + j);
+
+  quicksort(n, l, j - 1);
+  quicksort(n, j + 1, r);
+}
+
+void quicksortTest(void)
+{
+  // int n[] = { 10, 2, 3, -4, 5 };
+  // quicksort(n, 5);
+  int n[] = { -10, 2 };
+  printf("BEFORE\n");
+  printf("first: %d\n", n[0]);
+  printf("second: %d\n", n[1]);
+  quicksort(n, 0, 1);
+  printf("AFTER\n");
+  printf("first: %d\n", n[0]);
+  printf("second: %d\n", n[1]);
+}
+
 int strlen3(const char *s)
 {
   int i;
@@ -563,7 +615,7 @@ int strncmp2(const char *s, const char *t, int n)
   return *s - *t;
 }
 
-void ctrncmp2Test(void)
+void strncmp2Test(void)
 {
   int n1 = 0;
   char s1[] = "abcdef";
@@ -610,7 +662,7 @@ int strindex(const char *s, const char *t)
   }
 }
 
-void testStrindex()
+void strindexTest()
 {
   expect("strindex(`Hello, world`, `Hell`) is 0", strindex("Hello, world", "Hell") == 0);
   expect("strindex(`Hello, world`, `abc`) is -1", strindex("Hello, world", "abc") == -1);
@@ -620,6 +672,28 @@ void testStrindex()
   expect("strindex(`Hell`, `Hell`) is 0", strindex("Hell", "Hell") == 0);
   expect("strindex(` Hell`, `Hell`) is 1", strindex(" Hell", "Hell") == 1);
   expect("strindex(` Hell`, `l`) is 3", strindex(" Hell", "l") == 3);
+}
+
+void swap(int *n, int *m)
+{
+  int tmp = *n;
+  *n = *m;
+  *m = tmp;
+}
+
+void swapTest(void)
+{
+  int a = 5;
+  int *pa = &a;
+  int b = 10;
+  int *pb = &b;
+  printf("BEFORE:\n");
+  printf("a is %d, b is %d\n", a, b);
+  printf("pa is %p, pb is %p\n", pa, pb);
+  swap(pa, pb);
+  printf("AFTER:\n");
+  printf("a is %d, b is %d\n", a, b);
+  printf("pa is %p, pb is %p\n", pa, pb);
 }
 
 void ungetch(char c)
