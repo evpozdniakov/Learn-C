@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <string.h>
 
-int atoi(const char *s);
+#define BUF_SIZE 100
+
+int atoi(const char* s);
 void atoiTest(void);
-void expect(const char *s, int n);
+void expect(const char* s, int n);
 char getch(void);
 void getchTest(void);
-char getfloat(float *pf);
+char getfloat(float* pf);
 void getfloatTest(void);
-char getint(int *pn);
+char getint(int* pn);
 void getintTest(void);
 int isDigit(char c);
 void isDigitTest(void);
@@ -17,29 +19,28 @@ void isDigitOrDotTest(void);
 int isWhiteSpace(char c);
 void isWhiteSpaceTest(void);
 void pointerTest(void);
-void quicksort(int *n, int l, int r);
+void quicksort(int* n, int l, int r);
 void quicksortTest(void);
-int strlen3(const char *s);
-int strcmp2(char *dst, char *src);
+int strlen3(const char* s);
+int strcmp2(char* dst, char* src);
 void strcmp2Test(void);
-char * strcat2(char *s, const char *t);
+char* strcat2(char* s, const char* t);
 void strcat2Test(void);
-int strend(char *s, const char *t);
+int strend(char* s, const char* t);
 void strendTest(void);
-void strncpy2(char *s, const char *t, int n);
+void strncpy2(char* s, const char* t, int n);
 void strncpy2Test(void);
-void strncat2(char *s, const char *t, int n);
+void strncat2(char* s, const char* t, int n);
 void strncat2Test(void);
-int strncmp2(const char *s, const char *t, int n);
+int strncmp2(const char* s, const char* t, int n);
 void strncmp2Test(void);
-int strindex(const char *s, const char *t);
+int strindex(const char* s, const char* t);
 void strindexTest(void);
-void swap(int *n, int *m);
+void swap(int* n, int* m);
 void swapTest(void);
 void ungetch(char c);
 void ungetchTest(void);
 
-const int BUF_SIZE = 100;
 char BUF[BUF_SIZE];
 int BUF_INDEX = -1;
 
@@ -70,7 +71,7 @@ int main(int argc, char** argv)
 }
 
 /* converts received string into an integer and returns it (or zero) */
-int atoi(const char *s)
+int atoi(const char* s)
 {
   while (*s == ' ' || *s == '\t')
     s++;
@@ -111,7 +112,7 @@ void atoiTest(void)
   expect("atoi(`e123`) is 0", atoi("e123") == 0);
 }
 
-void expect(const char *s, int n)
+void expect(const char* s, int n)
 {
   printf("%s: %s\n", (n ? "PASS" : "FAIL"), s);
 }
@@ -135,11 +136,11 @@ void getchTest(void)
   printf("%c%c%c! %c", getch(), getch(), getch(), getch());
 }
 
-char getfloat(float *pf)
+char getfloat(float* pf)
 {
   int n;
 
-  int *pn = &n;
+  int* pn = &n;
 
   char c = getint(pn);
 
@@ -198,26 +199,26 @@ void getfloatTest(void)
     ungetch(c);
 
   float f;
-  float *pf = &f;
+  float* pf = &f;
 
   while ((c = getfloat(pf)) != EOF)
     if (c)
       printf("%f\t(%c)\n", *pf, c);
 }
 
-char getint(int *pn)
+char getint(int* pn)
 {
   char c, res;
   int sign;
 
   while (isWhiteSpace(c = getch()))
     ;
-  
+
   if (c != '+' && c != '-' && !isDigitOrDot(c) && c != EOF)
     return 0;
 
   sign = c == '-' ? -1 : 1;
-  
+
   if (c == '+' || c == '-')
     c = getch();
 
@@ -253,7 +254,7 @@ void getintTest(void)
     ungetch(c);
 
   int n;
-  int *pn = &n;
+  int* pn = &n;
 
   while ((c = getint(pn)) != EOF)
     if (c)
@@ -361,11 +362,11 @@ void isWhiteSpaceTest(void)
 
 void pointerTest(void)
 {
-  int a[] = {0, 1, 2, 3, 4, 5, 6, 7};
+  int a[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
-  int *p1 = &a[0];
+  int* p1 = &a[0];
 
-  int *p2;
+  int* p2;
 
   p2 = a;
 
@@ -376,7 +377,7 @@ void pointerTest(void)
 
   char s[] = "hello";
 
-  char *ps = &s[0];
+  char* ps = &s[0];
 
   int l = strlen3(s);
 
@@ -384,16 +385,16 @@ void pointerTest(void)
 
   for (int i = 0; i < 2000; i++)
     printf("%d %c", i, *(ps + i));
-  
+
   printf("\n");
 }
 
-void quicksort(int *n, int l, int r)
+void quicksort(int* n, int l, int r)
 {
   if (r <= l)
     return;
 
-  int *ppivot = n + (r - l) / 2;
+  int* ppivot = n + l + (r - l) / 2;
   int pivot = *ppivot;
 
   swap(ppivot, n + r);
@@ -402,39 +403,42 @@ void quicksort(int *n, int l, int r)
 
   while (1)
   {
-    while (*(n + i) <= pivot)
+    while (*(n + i) <= pivot && i < r)
       i++;
 
-    while (*(n + j) >= pivot)
+    while (*(n + j) >= pivot && j >= l)
       j--;
 
-    if (i > j)
+    if (i >= j)
       break;
 
     swap(n + i, n + j);
   }
 
-  swap(n + r, n + j);
+  ppivot = n + i;
 
-  quicksort(n, l, j - 1);
-  quicksort(n, j + 1, r);
+  swap(n + r, ppivot);
+
+  quicksort(n, l, ppivot - n - 1);
+  quicksort(n, ppivot - n + 1, r);
 }
 
 void quicksortTest(void)
 {
-  // int n[] = { 10, 2, 3, -4, 5 };
-  // quicksort(n, 5);
-  int n[] = { -10, 2 };
+  int n[] = { 10, 2, 3, -4, 5 };
   printf("BEFORE\n");
-  printf("first: %d\n", n[0]);
-  printf("second: %d\n", n[1]);
-  quicksort(n, 0, 1);
+  for (int i = 0; i < 5; i++)
+    printf("%d ", n[i]);
+  printf("\n");
+
+  quicksort(n, 0, 4);
   printf("AFTER\n");
-  printf("first: %d\n", n[0]);
-  printf("second: %d\n", n[1]);
+  for (int i = 0; i < 5; i++)
+    printf("%d ", n[i]);
+  printf("\n");
 }
 
-int strlen3(const char *s)
+int strlen3(const char* s)
 {
   int i;
 
@@ -444,7 +448,7 @@ int strlen3(const char *s)
   return i;
 }
 
-int strcmp2(char *s1, char *s2)
+int strcmp2(char* s1, char* s2)
 {
   do
   {
@@ -455,7 +459,7 @@ int strcmp2(char *s1, char *s2)
     s1++;
     s2++;
   } while (*s1 != '\0' || *s2 != '\0');
-  
+
   return 0;
 }
 
@@ -469,14 +473,14 @@ void strcmp2Test(void)
 }
 
 /* copies the string t to the end of s */
-char * strcat2(char *s, const char *t)
+char* strcat2(char* s, const char* t)
 {
-  char *res;
+  char* res;
   res = s;
 
   while (*s)
     s++;
-  
+
   while ((*s++ = *t++) != '\0')
     ;
 
@@ -496,7 +500,7 @@ void strcat2Test(void)
 }
 
 /* returns 1 if the string t occurs at the end of the string s, and zero otherwise */
-int strend(char *s, const char *t)
+int strend(char* s, const char* t)
 {
   int tl = strlen3(t);
   int sl = strlen3(s);
@@ -510,8 +514,7 @@ int strend(char *s, const char *t)
     // printf("%c vs %c\n", *s, *t);
     if (*s++ != *t++)
       return 0;
-  }
-  while (*s != '\0' && *t != '\0');
+  } while (*s != '\0' && *t != '\0');
 
   return 1;
 }
@@ -525,7 +528,7 @@ void strendTest(void)
   printf("strend(`bcde`, `abcde`) is %d\n", strend("bcde", "abcde"));
 }
 
-void strncpy2(char *s, const char *t, int n)
+void strncpy2(char* s, const char* t, int n)
 {
   for (int i = 0; *s != '\0' && *t != '\0' && i < n; i++)
     *s++ = *t++;
@@ -566,7 +569,7 @@ void strncpy2Test(void)
 }
 
 /* concatenate at most n characters of t to end of s */
-void strncat2(char *s, const char *t, int n)
+void strncat2(char* s, const char* t, int n)
 {
   s += strlen3(s);
 
@@ -607,7 +610,7 @@ void strncat2Test(void)
 
 /* compares first n characters of strings s and t;
    returns difference */
-int strncmp2(const char *s, const char *t, int n)
+int strncmp2(const char* s, const char* t, int n)
 {
   for (int i = 1; i < n && *s == *t && *s != '\0'; s++, t++, i++)
     ;
@@ -643,7 +646,7 @@ void strncmp2Test(void)
  * returns position of letf most entry of t in s
  * or -1
  */
-int strindex(const char *s, const char *t)
+int strindex(const char* s, const char* t)
 {
   int i = 0, j;
 
@@ -653,10 +656,10 @@ int strindex(const char *s, const char *t)
 
     if (*(t + j) == '\0')
       return i;
-    
+
     if (*(s + j) == '\0')
       return -1;
-    
+
     i++;
     s++;
   }
@@ -674,7 +677,7 @@ void strindexTest()
   expect("strindex(` Hell`, `l`) is 3", strindex(" Hell", "l") == 3);
 }
 
-void swap(int *n, int *m)
+void swap(int* n, int* m)
 {
   int tmp = *n;
   *n = *m;
@@ -684,9 +687,9 @@ void swap(int *n, int *m)
 void swapTest(void)
 {
   int a = 5;
-  int *pa = &a;
+  int* pa = &a;
   int b = 10;
-  int *pb = &b;
+  int* pb = &b;
   printf("BEFORE:\n");
   printf("a is %d, b is %d\n", a, b);
   printf("pa is %p, pb is %p\n", pa, pb);
